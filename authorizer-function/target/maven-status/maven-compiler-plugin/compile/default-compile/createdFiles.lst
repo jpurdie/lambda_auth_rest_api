@@ -1,0 +1,6 @@
+authorizer\aws\TokenAuthorizerContext.class
+authorizer\Authorizer.class
+authorizer\aws\AuthPolicy$HttpMethod.class
+authorizer\aws\AuthPolicy$PolicyDocument.class
+authorizer\aws\AuthPolicy$Statement.class
+authorizer\aws\AuthPolicy.class
