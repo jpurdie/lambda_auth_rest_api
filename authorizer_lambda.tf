@@ -2,13 +2,13 @@
  ***************  LAMBDA HELLO WORLD AUTHORIZER  ***************
 ***********************************************************/
 
-resource "aws_api_gateway_authorizer" "helloAuthorizer" {
-  name                   = "helloAuthorizer"
-  rest_api_id            = aws_api_gateway_rest_api.api.id
-  authorizer_uri         = aws_lambda_function.hello_world_authorizer.invoke_arn
-  authorizer_credentials = aws_iam_role.invocation_role.arn
-  type                   = "REQUEST"
-}
+//resource "aws_api_gateway_authorizer" "helloAuthorizer" {
+//  name                   = "helloAuthorizer"
+//  rest_api_id            = aws_api_gateway_rest_api.api.id
+//  authorizer_uri         = aws_lambda_function.hello_world_authorizer.invoke_arn
+//  authorizer_credentials = aws_iam_role.invocation_role.arn
+//  type                   = "REQUEST"
+//}
 
 resource "aws_iam_role" "invocation_role" {
   name = "api_gateway_auth_invocation"
