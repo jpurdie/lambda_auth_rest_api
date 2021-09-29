@@ -1,11 +1,8 @@
-/**********************************************************
- ***************  LAMBDA HELLO WORLD FUNCTION ***************
-***********************************************************/
 resource "aws_lambda_function" "hello_world" {
   function_name    = "HelloWorld"
   runtime          = "java8.al2"
-  filename         = "./hello-world-function/target/HelloWorld-1.0.jar"
-  source_code_hash = filebase64sha256("./hello-world-function/target/HelloWorld-1.0.jar")
+  filename         = var.lambda_payload_filename
+  source_code_hash = filebase64sha256(var.lambda_payload_filename)
   handler          = "helloworld.App::handleRequest"
   timeout          = 15
   memory_size      = 128
@@ -25,8 +22,6 @@ resource "aws_lambda_permission" "apigw_event_lambda_permission" {
   # How much can we restrict this for just this endpoint and function?
   source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
 }
-
-
 
 resource "aws_iam_role_policy_attachment" "lambda_logs" {
   role       = aws_iam_role.hello_lambda_role.name

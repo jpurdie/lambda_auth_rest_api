@@ -1,7 +1,6 @@
 /**********************************************************
  ***************  API GATEWAY  ***************
 ***********************************************************/
-
 variable "stage_name" {
   default = "dev"
   type    = string
@@ -12,7 +11,7 @@ resource "aws_api_gateway_rest_api" "api" {
   body = templatefile(
     "swagger.yml.tpl",
     {
-      app_domain        = "gradapprev-qa.apps.asu.edu"
+      app_domain        = var.app_domain
       helloworld_invoke = aws_lambda_function.hello_world.invoke_arn,
       authorizer_invoke = aws_lambda_function.hello_world_authorizer.invoke_arn
       authorizer_cred   = aws_iam_role.invocation_role.arn
