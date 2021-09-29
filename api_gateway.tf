@@ -33,7 +33,6 @@ resource "aws_api_gateway_deployment" "apideploy" {
   rest_api_id = aws_api_gateway_rest_api.api.id
 }
 
-
 resource "aws_api_gateway_stage" "api" {
   deployment_id = aws_api_gateway_deployment.apideploy.id
   rest_api_id   = aws_api_gateway_rest_api.api.id
@@ -56,24 +55,19 @@ resource "aws_lambda_permission" "apigwauthorizer" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.hello_world_authorizer.function_name
   principal     = "apigateway.amazonaws.com"
-
   # The "/*/*" portion grants access from any method on any resource
   # within the API Gateway REST API.
   source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
 }
 
-
-
 output "base_url" {
   value = aws_api_gateway_deployment.apideploy.invoke_url
 }
-
 
 resource "aws_api_gateway_method_settings" "example" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   stage_name  = aws_api_gateway_stage.api.stage_name
   method_path = "*/*"
-
   settings {
     metrics_enabled    = true
     logging_level      = "INFO"
@@ -81,7 +75,7 @@ resource "aws_api_gateway_method_settings" "example" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "example" {
+resource "aws_cloudwatch_log_group" "api_gw_log_group" {
   name              = "API-Gateway-Execution-Logs_${aws_api_gateway_rest_api.api.id}/${var.stage_name}"
   retention_in_days = 3
   # ... potentially other configuration ...

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/hello-world-function/HelloWorld.iml" filepath="$PROJECT_DIR$/hello-world-function/HelloWorld.iml" />
-      <module fileurl="file://$PROJECT_DIR$/authorizer-function/HelloWorldAuthorizer.iml" filepath="$PROJECT_DIR$/authorizer-function/HelloWorldAuthorizer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/authorizer-function/authorizer-function.iml" filepath="$PROJECT_DIR$/authorizer-function/authorizer-function.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hello-world-function/hello-world-function.iml" filepath="$PROJECT_DIR$/hello-world-function/hello-world-function.iml" />
     </modules>
   </component>
 </project>

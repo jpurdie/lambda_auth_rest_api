@@ -10,7 +10,9 @@ public class Authorizer implements RequestHandler<TokenAuthorizerContext, AuthPo
   @Override
   public AuthPolicy handleRequest(TokenAuthorizerContext input, Context context) {
 
+
     String token = input.getAuthorizationToken();
+    System.out.println("token: " + String.valueOf(token));
 
     // validate the incoming token
     // and produce the principal user identifier associated with the token

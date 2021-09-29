@@ -1,8 +1,9 @@
 /**********************************************************
  ***************  LAMBDA HELLO WORLD AUTHORIZER  ***************
 ***********************************************************/
-resource "aws_api_gateway_authorizer" "helloAuthorizerDemo" {
-  name                   = "helloAuthorizerDemo"
+
+resource "aws_api_gateway_authorizer" "helloAuthorizer" {
+  name                   = "helloAuthorizer"
   rest_api_id            = aws_api_gateway_rest_api.api.id
   authorizer_uri         = aws_lambda_function.hello_world_authorizer.invoke_arn
   authorizer_credentials = aws_iam_role.invocation_role.arn
@@ -29,6 +30,7 @@ resource "aws_iam_role" "invocation_role" {
 }
 EOF
 }
+
 
 resource "aws_iam_role_policy" "invocation_policy" {
   name = "default"
@@ -81,50 +83,36 @@ resource "aws_lambda_function" "hello_world_authorizer" {
   role = aws_iam_role.lambda.arn
 }
 
+resource "aws_cloudwatch_log_group" "example" {
+  name              = "/aws/lambda/hello_world_authorizer"
+  retention_in_days = 3
+}
 
+# See also the following AWS managed policy: AWSLambdaBasicExecutionRole
+resource "aws_iam_policy" "lambda_logging" {
+  name        = "lambda_logging"
+  path        = "/"
+  description = "IAM policy for logging from a lambda"
 
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:*",
+      "Effect": "Allow"
+    }
+  ]
+}
+EOF
+}
 
-
-
-
-//
-//resource "aws_lambda_permission" "apigw_authorizer_lambda_permission" {
-//  statement_id  = "AllowExecutionFromAPIGateway"
-//  action        = "lambda:InvokeFunction"
-//  function_name = aws_lambda_function.hello_world_authorizer.arn
-//  principal     = "apigateway.amazonaws.com"
-//  # How much can we restrict this for just this endpoint and function?
-//  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
-//}
-//
-//resource "aws_iam_role" "authorizer_lambda_role" {
-//  name               = "gradapprev-authorizer_lambda_role"
-//  description        = "IAM role for ortn authorizer lambda function in ${terraform.workspace}"
-//  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
-//}
-//
-//resource "aws_cloudwatch_log_group" "hello_world_authorizer" {
-//  name              = "/aws/lambda/${aws_lambda_function.hello_world_authorizer.function_name}"
-//  retention_in_days = 3
-//}
-//
-//resource "aws_iam_role_policy_attachment" "authorizer_lambda_vpc_policy_attachment" {
-//  role       = aws_iam_role.authorizer_lambda_role.name
-//  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-//}
-//
-//
-//# Try to store this here centrally for use in all lambda functions.
-//data "aws_iam_policy_document" "lambda_assume_role_policy" {
-//  version = "2012-10-17"
-//  statement {
-//    sid     = ""
-//    effect  = "Allow"
-//    actions = ["sts:AssumeRole"]
-//
-//    principals {
-//      type        = "Service"
-//      identifiers = ["lambda.amazonaws.com"]
-//    }
-//  }
-//}
+resource "aws_iam_role_policy_attachment" "lambda_logs_auth" {
+  role       = aws_iam_role.lambda.name
+  policy_arn = aws_iam_policy.lambda_logging.arn
+}

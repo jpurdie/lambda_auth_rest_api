@@ -9,14 +9,12 @@ resource "aws_lambda_function" "hello_world" {
   handler          = "helloworld.App::handleRequest"
   timeout          = 15
   memory_size      = 128
-  // s3_bucket        = aws_s3_bucket.lambda_bucket.id
-  //s3_key           = aws_s3_bucket_object.lambda_hello_world.key
-  role = aws_iam_role.hello_lambda_role.arn
+  role             = aws_iam_role.hello_lambda_role.arn
 }
 
 resource "aws_cloudwatch_log_group" "hello_world" {
   name              = "/aws/lambda/${aws_lambda_function.hello_world.function_name}"
-  retention_in_days = 30
+  retention_in_days = 3
 }
 
 resource "aws_lambda_permission" "apigw_event_lambda_permission" {
@@ -28,9 +26,15 @@ resource "aws_lambda_permission" "apigw_event_lambda_permission" {
   source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
 }
 
-resource "aws_iam_role" "hello_lambda_role" {
-  name = "role_lambda"
 
+
+resource "aws_iam_role_policy_attachment" "lambda_logs" {
+  role       = aws_iam_role.hello_lambda_role.name
+  policy_arn = aws_iam_policy.lambda_logging.arn
+}
+
+resource "aws_iam_role" "hello_lambda_role" {
+  name               = "role_lambda"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -46,5 +50,4 @@ resource "aws_iam_role" "hello_lambda_role" {
   ]
 }
 EOF
-
 }
